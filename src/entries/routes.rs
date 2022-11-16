@@ -1,6 +1,7 @@
 use crate::entries::{Entry, Entries};
 use crate::error_handler::CustomError;
 use actix_web::{delete, get, post, put, web, HttpResponse};
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 #[get("/example")]
@@ -15,9 +16,14 @@ async fn find_all() -> Result<HttpResponse, CustomError> {
     Ok(HttpResponse::Ok().json(entries))
 }
 
-#[get("/entries/{id}")]
-async fn find(location: web::Path<i32>) -> Result<HttpResponse, CustomError> {
-    let entry = Entries::find(location.into_inner())?;
+#[derive(Serialize, Deserialize)]
+struct EntryRequest {
+    location: i32
+}
+
+#[get("/entries")]
+async fn find(web::Query(info): web::Query<EntryRequest>) -> Result<HttpResponse, CustomError> {
+    let entry = Entries::find(info.location)?;
     Ok(HttpResponse::Ok().json(entry))
 }
 

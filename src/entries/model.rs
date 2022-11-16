@@ -60,7 +60,7 @@ impl Entries {
             id: 0,
             user_name: String::from("JohnFortnite"),
             location: 6,
-            duration: chrono::NaiveTime::from_hms(4, 34, 15)
+            duration: chrono::NaiveTime::from_hms_opt(4, 34, 15).unwrap()
         }
     }
 
