@@ -10,29 +10,33 @@ async fn example() -> Result<HttpResponse, CustomError> {
     Ok(HttpResponse::Ok().json(entry))
 }
 
-// #[get("/entries")]
-// async fn find_all() -> Result<HttpResponse, CustomError> {
-//     let entries = Entries::find_all()?;
-//     Ok(HttpResponse::Ok().json(entries))
-// }
-
 #[derive(Serialize, Deserialize)]
 struct EntryRequest {
-    location: Option<i32>
+    location: Option<i32>,
+    id: Option<i32>
 }
 
 #[get("/entries")]
 async fn find(web::Query(info): web::Query<EntryRequest>) -> Result<HttpResponse, CustomError> {
+    match info.id {
+        Some(id) => {
+            println!("Finding by ID");
+            let entry = Entries::find(id)?;
+            return Ok(HttpResponse::Ok().json(entry));
+        }
+        None => {}
+    }
     match info.location {
         Some(location) => {
+            println!("Finding by location");
             let entry = Entries::find(location)?;
             return Ok(HttpResponse::Ok().json(entry));
         }
-        None => {
-            let entries = Entries::find_all()?;
-            return Ok(HttpResponse::Ok().json(entries))
-        }
+        None => {}
     }
+    println!("Finding all");
+    let entries = Entries::find_all()?;
+    Ok(HttpResponse::Ok().json(entries))
 }
 
 #[post("/entries")]
