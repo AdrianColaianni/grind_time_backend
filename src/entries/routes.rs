@@ -10,21 +10,29 @@ async fn example() -> Result<HttpResponse, CustomError> {
     Ok(HttpResponse::Ok().json(entry))
 }
 
-#[get("/entries")]
-async fn find_all() -> Result<HttpResponse, CustomError> {
-    let entries = Entries::find_all()?;
-    Ok(HttpResponse::Ok().json(entries))
-}
+// #[get("/entries")]
+// async fn find_all() -> Result<HttpResponse, CustomError> {
+//     let entries = Entries::find_all()?;
+//     Ok(HttpResponse::Ok().json(entries))
+// }
 
 #[derive(Serialize, Deserialize)]
 struct EntryRequest {
-    location: i32
+    location: Option<i32>
 }
 
 #[get("/entries")]
 async fn find(web::Query(info): web::Query<EntryRequest>) -> Result<HttpResponse, CustomError> {
-    let entry = Entries::find(info.location)?;
-    Ok(HttpResponse::Ok().json(entry))
+    match info.location {
+        Some(location) => {
+            let entry = Entries::find(location)?;
+            return Ok(HttpResponse::Ok().json(entry));
+        }
+        None => {
+            let entries = Entries::find_all()?;
+            return Ok(HttpResponse::Ok().json(entries))
+        }
+    }
 }
 
 #[post("/entries")]
@@ -50,7 +58,7 @@ async fn delete(id: web::Path<i32>) -> Result<HttpResponse, CustomError> {
 
 pub fn init_routes(config: &mut web::ServiceConfig) {
     config.service(example);
-    config.service(find_all);
+    // config.service(find_all);
     config.service(find);
     config.service(create);
     // config.service(update);
