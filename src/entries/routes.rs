@@ -18,21 +18,15 @@ struct EntryRequest {
 
 #[get("/entries")]
 async fn find(web::Query(info): web::Query<EntryRequest>) -> Result<HttpResponse, CustomError> {
-    match info.id {
-        Some(id) => {
-            println!("Finding by ID");
-            let entry = Entries::find(id)?;
-            return Ok(HttpResponse::Ok().json(entry));
-        }
-        None => {}
+    if let Some(id) = info.id {
+        println!("Finding by ID");
+        let entry = Entries::find_id(id)?;
+        return Ok(HttpResponse::Ok().json(entry));
     }
-    match info.location {
-        Some(location) => {
-            println!("Finding by location");
-            let entry = Entries::find(location)?;
-            return Ok(HttpResponse::Ok().json(entry));
-        }
-        None => {}
+    if let Some(location) = info.location {
+        println!("Finding by location");
+        let entry = Entries::find_location(location)?;
+        return Ok(HttpResponse::Ok().json(entry));
     }
     println!("Finding all");
     let entries = Entries::find_all()?;

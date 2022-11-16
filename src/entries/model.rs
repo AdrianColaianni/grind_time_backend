@@ -70,9 +70,15 @@ impl Entries {
         Ok(entries)
     }
 
-    pub fn find(location: i32) -> Result<Vec<Self>, CustomError> {
+    pub fn find_location(location: i32) -> Result<Vec<Self>, CustomError> {
         let conn = db::connection()?;
         let entries = entries::table.filter(entries::location.eq(location)).load::<Entries>(&conn)?;
+        Ok(entries)
+    }
+
+    pub fn find_id(id: i32) -> Result<Vec<Self>, CustomError> {
+        let conn = db::connection()?;
+        let entries = entries::table.filter(entries::id.eq(id)).load::<Entries>(&conn)?;
         Ok(entries)
     }
 
