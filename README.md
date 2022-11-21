@@ -6,24 +6,24 @@ This is a small Rust API which acts as the backend for our [Grind Time App](http
 
 ## Milestone/Roadmap
 
-`0.01.0:` UI page switching
-`0.02.0:` Home screen UI
-`0.03.0:` Global leader board UI
-`0.04.0:` Map page with building leader boards
-`0.05.0:` Account UI
-`      :` UI finished
-`0.06.0:` Buildings with coordinates
-`0.07.0:` Persistent storage
-`0.08.0:` Background location service
-`0.09.0:` Async data processing on launch
-`0.10.0:` Accounts
-`      :` Local functionality implemented
-`0.11.0:` Authentication
-`0.12.0:` API get implementation for leader boards
-`0.13.0:` API push implementation
-`      :` - Times will be pushed after processing data on launch
-`0.14.0:` TBD
-`1.00.0:` Completed app
+- `0.01.0:` UI page switching
+- `0.02.0:` Home screen UI
+- `0.03.0:` Global leader board UI
+- `0.04.0:` Map page with building leader boards
+- `0.05.0:` Account UI
+- `      :` UI finished
+- `0.06.0:` Buildings with coordinates
+- `0.07.0:` Persistent storage
+- `0.08.0:` Background location service
+- `0.09.0:` Async data processing on launch
+- `0.10.0:` Accounts
+- `      :` Local functionality implemented
+- `0.11.0:` Authentication
+- `0.12.0:` API get implementation for leader boards
+- `0.13.0:` API push implementation
+- `      :` - Times will be pushed after processing data on launch
+- `0.14.0:` TBD
+- `1.00.0:` Completed app
 
 ## Features
 - Seasonal events
