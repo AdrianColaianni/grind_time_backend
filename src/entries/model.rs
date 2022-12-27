@@ -3,45 +3,22 @@ use crate::error_handler::CustomError;
 use crate::schema::entries;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use chrono::naive::NaiveTime;
 
+#[allow(dead_code)]
+#[derive(Debug)]
 enum Location {
-    AdministrativeServicesBuilding, AgriculturalServiceCenter, AlumniCenter, BarnettHall, BarreHall,
-    BenetHall, BiologicalSciencesFieldStation, BiosystemsResearchComplex, BotanicalGarden,  BowenHall,
-    BrackettHall, BradleyHall, BrooksCenterforthePerformingArts, ByrnesHall, CalhounCourtsApartments,
-    CalhounsOffice, CampbellCarriageHouseCoffeeandGiftShop, CampbellGeologyMuseum,
-    CampbellMuseumofNaturalHistory, CarillonGarden,
-    CenterfortheImprovementofConstructionandManagementProcesses, CentralEnergyFacilities, Classof1957Rotunda,
-    ClemsonHouse, ClemsonMemorialStadiumandFrankHowardField, ClemsonStatue,
-    ClemsonUniversityFoundationShirleyCenterforPhilanthropy, CookAgriculturalServiceLaboratory,
-    CookEngineeringLaboratory, CooperLibrary, CopeHall, CoxPlaza, DanielHall, DillardBuilding, DonaldsonHall,
-    EarleHall, EdwardsHall, EndocrinePhysiologyLaboratory, FernowStreetCafe, FikeRecreationCenter,
-    FireStation, FluorDanielEngineeringInnovationBuilding, FortHill, FranHansonDiscoveryCenter, FreemanHall,
-    GanttCircle, GeerHall, GentryHall, GodfreyHall, GodleySnellResearchCenter, GreenhouseComplex,
-    HanoverHouse, HarcombeDiningHall, HardinHall, HaydenConferenceCenter, HendrixStudentCenter, HolmesHall,
-    HoltzendorffHall, Hopewell, HousingMaintenanceFacility, HoustonCenter, HunterChemistryLaboratory,
-    IptayTicketOffice, IndoorTrack, InternalAuditingOffice, JerveyAthleticCenter, JohnstoneHall, JordanHall,
-    KinardLaboratoryPhysics, KiteHillRecyclingCenter, LaMasterDairyCenter, LeeHall, LehotskyHall, LeverHall,
-    LightseyBridgeIApartments, LightseyBridgeIIApartments, LittlejohnColiseum, LittlejohnHouse, LongHall,
-    LowryHall, MadrenCenter, MaintenanceStores, ManningHall, MartinHall, MauldinHall, McAdamsHall,
-    McCabeHall, McFaddenBuilding, MellHall, MilitaryHeritagePlaza, MoormanHouse, MorganPoultryCenter,
-    MotorPool, NationalDropoutPreventionCenter, NewmanHall, NormanTrack, NorrisHall, OlinHall,
-    OutdoorTheatre, PlantGermplasmResearchLaboratory, PoliceDepartment, PooleAgriculturalCenter,
-    PresidentsHome, RedfernHealthCenter, ReunionSquare, RhodesAnnex, RhodesEngineeringResearchCenter,
-    RiggsField, RiggsHall, RoderickInternationalHouse, FoundationSeed, SandersHall, SchilletterDiningHall,
-    ScrollofHonorMemorial, SearsHouse, SheepBarn, SikesHall, SimpsonHallNorth, SimpsonHallSouth, SirrineHall,
-    SloanTennisCenter, SmithBuildingforSonocoInstituteofPackagingDesignandGraphics, SmithHall,
-    StadiumResidenceHall, StrodeTower, ThornhillVillageApartments, ThurmondInstitute, TigerField,
-    TillmanHall, TrusteeHouse, UniversityFacilitiesEnvironmentalHealthandSafety,
-    UniversityFacilitiesOperations, UniversityUnion, EdgarBrown, VickeryHall, VisitorsCenter, Classof1944,
-    WalkerGolfCourseClubhouse, WannamakerHall, WomensRowingBoathouses, WoodlandCemetery, YoungHall
+    BarreHall, BrackettHall, ChandlerHall, CollegeOfBusiness, CooperLibrary, CribbHall,
+    DanielHall, DesChampsHall, EarleHall, EdwardsHall, FikeRecCenter, FreemanHall,
+    GressetteHall, HardinHall, Hendrix, HumanitiesHall, LehotskyHall, LongHall, LowryHall,
+    MartinHall, McAlisterHall, MichelHall, NewmanHall, PoolCenter, RiggsHall, SikesHall,
+    SirrineHall, VickeryHall, Watt,
 }
 
-#[derive(Serialize, Deserialize, AsChangeset, Insertable)]
+#[derive(Serialize, Deserialize, AsChangeset, Insertable, PartialEq, Debug)]
 #[table_name = "entries"]
 pub struct Entry {
     pub user_name: String,
-    pub duration: NaiveTime,
+    pub minutes: i32,
     pub location: i32,
 }
 
@@ -50,7 +27,7 @@ pub struct Entry {
 pub struct Entries {
     pub id: i32,
     pub user_name: String,
-    pub duration: NaiveTime,
+    pub minutes: i32,
     pub location: i32,
 }
 
@@ -59,8 +36,8 @@ impl Entries {
         Entries {
             id: 0,
             user_name: String::from("JohnFortnite"),
-            location: 6,
-            duration: chrono::NaiveTime::from_hms_opt(4, 34, 15).unwrap()
+            location: Location::LongHall as i32,
+            minutes: 274,   // 4 hrs 34 minutes
         }
     }
 
@@ -117,8 +94,50 @@ impl Entry {
     fn from(entry: Entry) -> Entry {
         Entry {
             user_name: entry.user_name,
-            duration: entry.duration,
+            minutes: entry.minutes,
             location: entry.location,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Entry, Location};
+
+    #[test]
+    fn entry_eq() {
+        let entry1 = Entry {
+            user_name: String::from("JohnFortnite"),
+            location: Location::LongHall as i32,
+            minutes: 274,   // 4 hrs 34 minutes
+        };
+        let entry2 = Entry {
+            user_name: String::from("JohnFortnite"),
+            location: Location::LongHall as i32,
+            minutes: 274,   // 4 hrs 34 minutes
+        };
+
+        assert!(entry1.eq(&entry2));
+    }
+
+    #[test]
+    fn entry_ne() {
+        let entry1 = Entry {
+            user_name: String::from("JohnFortnite"),
+            location: Location::LongHall as i32,
+            minutes: 274,   // 4 hrs 34 minutes
+        };
+        let entry2 = Entry {
+            user_name: String::from("JoeFortnite"),
+            location: Location::LongHall as i32,
+            minutes: 274,   // 4 hrs 34 minutes
+        };
+
+        assert!(!entry1.eq(&entry2));
+    }
+
+    #[test]
+    fn entry_display() {
+        assert_eq!("CooperLibrary", format!("{:?}", Location::CooperLibrary));
     }
 }
